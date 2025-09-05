@@ -1,10 +1,10 @@
 import React from 'react'
-import { FlatList, TouchableOpacity, Text } from 'react-native'
+import { FlatList, TouchableOpacity, Text, StyleSheet } from 'react-native'
 
 const HomePageScreen = ({ navigation }: { navigation: any }) => {
   return (
     <>
-        <Text style={{ fontSize:24, fontWeight:'600', padding:12, textAlign:'center' }}>Welcome to World Explorer</Text>
+        <Text style={styles.header}>Welcome to World Explorer</Text>
         <FlatList
         contentContainerStyle={{ padding: 12 }}
         data={[
@@ -21,5 +21,16 @@ const HomePageScreen = ({ navigation }: { navigation: any }) => {
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  header: {
+    fontSize: 24,
+    fontWeight: '600',
+    padding: 12,
+    textAlign: 'center',
+    marginTop: 50,
+
+  },
+});
 
 export default HomePageScreen
