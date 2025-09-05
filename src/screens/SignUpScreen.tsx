@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import { View, Text, TextInput, Button, StyleSheet, Pressable } from 'react-native'
 import db from '../../mock-db/db.json'
+import Toast from 'react-native-toast-message'
 
 const SignUpScreen = ({navigation}: {navigation: any}) => {
 
@@ -25,6 +26,11 @@ const SignUpScreen = ({navigation}: {navigation: any}) => {
       return
     }
     db.push({ id: db.length + 1, name, email, password, favoriteCodes: [] })
+    Toast.show({
+        type: 'success',
+        text1: 'Sign Up Successful',
+        text2: `Welcome, ${name}!`
+    })
     setTimeout(() => {
       navigation.navigate('HomePage')
     }, 1000 )

@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import { View, Text, TextInput, Button, StyleSheet, Pressable } from 'react-native'
 import db from '../../mock-db/db.json'
+import Toast from 'react-native-toast-message'
 
 const Logincreen = ({navigation}: {navigation: any}) => {
 
@@ -13,12 +14,16 @@ const Logincreen = ({navigation}: {navigation: any}) => {
       setError('Email and password are required')
       return
     }
+    const user = db.find(u => u.email === email && u.password === password)
+    if(!user) {
+      setError('Invalid email or password')
+      return
+    }
+    Toast.show({
+      type: 'success',
+      text1: `Welcome back, ${user.name}!`
+    })
     setTimeout(() => {
-      const user = db.find(u => u.email === email && u.password === password)
-      if(!user) {
-        setError('Invalid email or password')
-        return
-      }
       navigation.navigate('HomePage')
     }, 1000 )
   }
