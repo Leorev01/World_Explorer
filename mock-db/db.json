@@ -1,9 +1,0 @@
-[
-    {
-        "id":1,
-        "name":"Leo",
-        "email": "leo@leo.com",
-        "password": "password",
-        "favoriteCodes": ["IN", "US", "GB"]
-    }
-]
