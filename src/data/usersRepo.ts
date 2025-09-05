@@ -1,0 +1,34 @@
+import { useSQLiteContext } from 'expo-sqlite';
+
+export function useUsersRepo() {
+  const db = useSQLiteContext();
+
+  const register = async (name: string, email: string, password: string, favourites: string) => {
+    await db.runAsync(
+      'INSERT INTO users (name, email, password, favourites) VALUES (?, ?, ?, ?)',
+      [name, email, password, favourites]
+    );
+  };
+
+  const findByEmail = async (email: string) => {
+    return await db.getFirstAsync<{ id: number; name: string; email: string; password: string }>(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
+  };
+
+  const login = async (email: string, password: string) => {
+    return await db.getFirstAsync<{ id: number; name: string; email: string; favourites: string }>(
+      'SELECT id, name, email, favourites FROM users WHERE email = ? AND password = ?',
+      [email, password]
+    );
+  };
+
+  const listAll = async () => {
+    return await db.getAllAsync<{ id: number; name: string; email: string }>(
+      'SELECT id, name, email FROM users'
+    );
+  };
+
+  return { register, findByEmail, login, listAll };
+}

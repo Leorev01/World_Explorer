@@ -1,17 +1,19 @@
 import {useState} from 'react'
 import { View, Text, TextInput, Button, StyleSheet, Pressable } from 'react-native'
-import db from '../../mock-db/db.json'
+//import db from '../../mock-db/db.json'
 import Toast from 'react-native-toast-message'
+import {useUsersRepo} from '../data/usersRepo'
 
 const SignUpScreen = ({navigation}: {navigation: any}) => {
-
+  
+  const {findByEmail, register} = useUsersRepo()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState<string | undefined>()
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if(!name || !email || !password || !confirmPassword) {
       setError('All fields are required')
       return
@@ -20,12 +22,19 @@ const SignUpScreen = ({navigation}: {navigation: any}) => {
       setError('Passwords do not match')
       return
     }
-    const user = db.find(u => u.email === email)
-    if(user) {
-      setError('Email already in use')
-      return
+    try{
+        
+        const user = await findByEmail(email)
+        if(user) {
+          setError('Email already in use')
+          return
+        }
+        await register(name, email, password, JSON.stringify([]))
+    } catch (error) {
+        setError('Failed to create account: ' + error)
+        return
     }
-    db.push({ id: db.length + 1, name, email, password, favoriteCodes: [] })
+    //db.push({ id: db.length + 1, name, email, password, favoriteCodes: [] })
     Toast.show({
         type: 'success',
         text1: 'Sign Up Successful',

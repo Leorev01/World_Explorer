@@ -1,31 +1,37 @@
 import {useState} from 'react'
 import { View, Text, TextInput, Button, StyleSheet, Pressable } from 'react-native'
-import db from '../../mock-db/db.json'
+//import db from '../../mock-db/db.json'
 import Toast from 'react-native-toast-message'
+import {useUsersRepo} from '../data/usersRepo'
 
 const Logincreen = ({navigation}: {navigation: any}) => {
 
+  const {login} = useUsersRepo()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | undefined>()
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if(!email || !password) {
       setError('Email and password are required')
       return
     }
-    const user = db.find(u => u.email === email && u.password === password)
-    if(!user) {
-      setError('Invalid email or password')
-      return
+    try{
+      const user = await login(email, password)
+      if(!user) {
+        setError('Invalid email or password')
+        return
+      }
+      Toast.show({
+        type: 'success',
+        text1: `Welcome back, ${user.name}!`
+      })
+      setTimeout(() => {
+        navigation.navigate('HomePage')
+      }, 1000 )
+    }catch{
+      setError('Login failed')
     }
-    Toast.show({
-      type: 'success',
-      text1: `Welcome back, ${user.name}!`
-    })
-    setTimeout(() => {
-      navigation.navigate('HomePage')
-    }, 1000 )
   }
   return (
     <View style={styles.container}>
