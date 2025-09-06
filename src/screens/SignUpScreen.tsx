@@ -1,10 +1,25 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import { View, Text, TextInput, Button, StyleSheet, Pressable } from 'react-native'
 //import db from '../../mock-db/db.json'
 import Toast from 'react-native-toast-message'
 import {useUsersRepo} from '../data/usersRepo'
+import AsyncStorage from 'expo-sqlite/kv-store'
 
 const SignUpScreen = ({navigation}: {navigation: any}) => {
+
+  
+    useEffect(() => {
+      const checkLoggedIn = async () => {
+        const userString = await AsyncStorage.getItem('user');
+        if (userString) {
+          const user = JSON.parse(userString);
+          if (user) {
+            navigation.replace('HomePage');
+          }
+        }
+      };
+      checkLoggedIn();
+    }, []);
   
   const {findByEmail, register} = useUsersRepo()
   const [name, setName] = useState('')
@@ -34,7 +49,8 @@ const SignUpScreen = ({navigation}: {navigation: any}) => {
         setError('Failed to create account: ' + error)
         return
     }
-    //db.push({ id: db.length + 1, name, email, password, favoriteCodes: [] })
+    const newUser = await findByEmail(email)
+    await AsyncStorage.setItem('user', JSON.stringify(newUser))
     Toast.show({
         type: 'success',
         text1: 'Sign Up Successful',

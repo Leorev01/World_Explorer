@@ -1,14 +1,20 @@
-import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import type { Country } from '../types';
-import { useReactiveVar } from '@apollo/client';
-import { favoriteCodesVar, toggleFavorite } from '../state/favourites';
+import {useFavouriteContext} from "../context/FavouriteContext";
 
 export default function CountryCard({
   item, onPress,
 }: { item: Country; onPress?: () => void }) {
-  const favs = useReactiveVar(favoriteCodesVar);
-  const isFav = favs.includes(item.code);
+  const { favourites, addFavourite, removeFavourite } = useFavouriteContext();
+  const isFav = favourites.includes(item.code);
+
+  const handleToggleFavorite = async () => {
+    if (isFav) {
+      removeFavourite(item.code);
+    } else {
+      addFavourite(item.code);
+    }
+  };
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.card} activeOpacity={0.8}>
@@ -21,9 +27,9 @@ export default function CountryCard({
           </Text>
         </View>
         <TouchableOpacity
-          onPress={() => toggleFavorite(item.code)}
+          onPress={handleToggleFavorite}
           accessibilityRole="button"
-          accessibilityLabel={isFav ? 'Remove favorite' : 'Add favorite'}
+          accessibilityLabel={isFav ? 'Remove favourite' : 'Add favourite'}
           style={styles.starWrap}
         >
           <Text style={styles.star}>{isFav ? '★' : '☆'}</Text>

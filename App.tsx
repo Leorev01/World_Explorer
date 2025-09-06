@@ -4,6 +4,7 @@ import { client } from './src/apollo/client';
 import RootNavigator from './src/navigation';
 import Toast from 'react-native-toast-message';
 import { SQLiteProvider } from 'expo-sqlite';
+import { FavouriteProvider } from './src/context/FavouriteContext';
 
 export default function App() {
 
@@ -24,8 +25,10 @@ export default function App() {
   return (
     <SQLiteProvider databaseName="world.db" onInit={migrateDbAsync}>
       <ApolloProvider client={client}>
-        <RootNavigator />
-        <Toast />
+        <FavouriteProvider>
+          <RootNavigator />
+          <Toast />
+        </FavouriteProvider>
       </ApolloProvider>
     </SQLiteProvider>
   );

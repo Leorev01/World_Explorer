@@ -1,10 +1,24 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import { View, Text, TextInput, Button, StyleSheet, Pressable } from 'react-native'
 //import db from '../../mock-db/db.json'
 import Toast from 'react-native-toast-message'
 import {useUsersRepo} from '../data/usersRepo'
+import AsyncStorage from 'expo-sqlite/kv-store'
 
 const Logincreen = ({navigation}: {navigation: any}) => {
+
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      const userString = await AsyncStorage.getItem('user');
+      if (userString) {
+        const user = JSON.parse(userString);
+        if (user) {
+          navigation.replace('HomePage');
+        }
+      }
+    };
+    checkLoggedIn();
+  }, []);
 
   const {login} = useUsersRepo()
   const [email, setEmail] = useState('')
@@ -22,6 +36,7 @@ const Logincreen = ({navigation}: {navigation: any}) => {
         setError('Invalid email or password')
         return
       }
+      await AsyncStorage.setItem('user', JSON.stringify(user))
       Toast.show({
         type: 'success',
         text1: `Welcome back, ${user.name}!`

@@ -6,14 +6,15 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation';
 import type { Country } from '../types';
 import Chip from '../components/Chip';
-import { useReactiveVar } from '@apollo/client';
-import { favoriteCodesVar, toggleFavorite } from '../state/favourites';
+import AsyncStorage from 'expo-sqlite/kv-store';
+import { useFavouriteContext } from '../context/FavouriteContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CountryDetail'>;
 
 export default function CountryDetailScreen({ route, navigation }: Props) {
   const { code } = route.params;
-  const favs = useReactiveVar(favoriteCodesVar);
+  const { favourites, addFavourite, removeFavourite } = useFavouriteContext();
+  const isFav = favourites.includes(code);
 
   const { data, loading, error } = useQuery(GET_COUNTRY, { variables: { code } });
   const countriesQuery = useQuery(GET_COUNTRIES); // for combined data
@@ -33,7 +34,24 @@ export default function CountryDetailScreen({ route, navigation }: Props) {
     x.languages.some(l => c.languages.map(k => k.code).includes(l.code))
   ).slice(0, 12);
 
-  const isFav = favs.includes(c.code);
+
+  const handleToggleFavorite = async () => {
+    const user = await AsyncStorage.getItem('user').then(u => u ? JSON.parse(u) : null);
+    if (!user) {
+      // User not logged in, handle accordingly (e.g., show a message)
+      return;
+    }
+    const favourites = user.favourites ? JSON.parse(user.favourites) : [];
+    let updatedFavourites;
+    if (isFav) {
+      updatedFavourites = favourites.filter((code: string) => code !== c.code);
+      removeFavourite(c.code);
+    } else {
+      updatedFavourites = [...favourites, c.code];
+      addFavourite(c.code);
+    }
+    await AsyncStorage.setItem('user', JSON.stringify({ ...user, favourites: JSON.stringify(updatedFavourites) }));
+  }
 
   return (
     <ScrollView contentContainerStyle={{ padding: 12, paddingBottom: 32 }}>
@@ -58,7 +76,7 @@ export default function CountryDetailScreen({ route, navigation }: Props) {
         </View>
 
         <View style={{ marginTop:12 }}>
-          <Chip label={isFav ? '★ Favorited' : '☆ Favorite'} active={isFav} onPress={() => toggleFavorite(c.code)} />
+          <Chip label={isFav ? '★ Favourited' : '☆ Favourite'} active={isFav} onPress={() => handleToggleFavorite()} />
         </View>
       </View>
 

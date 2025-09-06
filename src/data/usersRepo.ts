@@ -30,5 +30,19 @@ export function useUsersRepo() {
     );
   };
 
-  return { register, findByEmail, login, listAll };
+  const getFavourites = async (id: number) => {
+    return await db.getFirstAsync<{ favourites: string }>(
+      'SELECT favourites FROM users WHERE id = ?',
+      [id]
+    );
+  }
+
+  const addFavourites = async (id: number, favourites: string) => {
+    await db.runAsync(
+      'UPDATE users SET favourites = ? WHERE id = ?',
+      [favourites, id]
+    );
+  }
+
+  return { register, findByEmail, login, listAll, getFavourites, addFavourites };
 }
