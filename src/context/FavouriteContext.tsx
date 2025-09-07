@@ -4,8 +4,8 @@ import { useUsersRepo } from '../data/usersRepo';
 
 type FavouriteContextType = {
   favourites: string[];
-  addFavourite: (code: string) => void;
-  removeFavourite: (code: string) => void;
+  addFavourite: (code: string) => Promise<void>;
+  removeFavourite: (code: string) => Promise<void>;
   isFavourite: (code: string) => boolean;
 };
 
@@ -33,14 +33,14 @@ export const FavouriteProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
-  const addFavourite = (code: string) => {
+  const addFavourite = async (code: string) => {
     if (!favourites.includes(code)) {
       saveFavourites([...favourites, code]);
     }
   };
 
-  const removeFavourite = (code: string) => {
-    saveFavourites(favourites.filter(fav => fav !== code));
+  const removeFavourite = async (code: string) => {
+    await saveFavourites(favourites.filter(fav => fav !== code));
   };
 
   const isFavourite = (code: string) => favourites.includes(code);
