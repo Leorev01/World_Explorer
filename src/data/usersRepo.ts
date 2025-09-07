@@ -44,5 +44,12 @@ export function useUsersRepo() {
     );
   }
 
-  return { register, findByEmail, login, listAll, getFavourites, addFavourites };
+  const updateProfile = async (id: number, name: string, email: string) => {
+    await db.runAsync(
+      'UPDATE users SET name = ?, email = ? WHERE id = ?',
+      [name, email, id]
+    );
+  }
+
+  return { register, findByEmail, login, listAll, getFavourites, addFavourites, updateProfile };
 }

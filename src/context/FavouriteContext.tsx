@@ -26,11 +26,11 @@ export const FavouriteProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     fetchUser();
   }, []);
 
-  const saveFavourites = (newFavs: string[]) => {
+  const saveFavourites = async (newFavs: string[]) => {
     setFavourites(newFavs);
-    addFavourites(user.id, JSON.stringify(newFavs));
+    await addFavourites(user.id, JSON.stringify(newFavs));
     const updatedUser = { ...user, favourites: JSON.stringify(newFavs) };
-    AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+    await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
   const addFavourite = (code: string) => {
