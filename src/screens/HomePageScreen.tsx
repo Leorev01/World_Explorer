@@ -10,6 +10,7 @@ const HomePageScreen = ({ navigation }: { navigation: any }) => {
         data={[
             { key: 'Continents', label: 'Lets Explore the World!' },
             { key: 'Favourites', label: 'Your Favourite Countries' },
+            { key: 'Profile', label: 'Your Profile' }
         ]}
         renderItem={({ item }) => (
             <TouchableOpacity onPress={() => navigation.navigate(item.key)}

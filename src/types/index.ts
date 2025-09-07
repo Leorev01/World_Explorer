@@ -10,3 +10,10 @@ export type Country = {
   continent?: { code: string; name: string } | null;
   languages: Language[];
 };
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  favourites?: string;
+};

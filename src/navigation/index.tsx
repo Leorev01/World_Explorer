@@ -8,11 +8,13 @@ import HomePage from '../screens/HomePageScreen';
 import FavouritesScreen from '../screens/FavouritesScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 export type RootStackParamList = {
   Login: undefined;
   SignUp: undefined;
   HomePage: undefined;
+  Profile: undefined;
   Favourites: undefined;
   Continents: undefined;
   Countries: { continentCode?: string; continentName?: string } | undefined;
@@ -28,6 +30,7 @@ export default function RootNavigator() {
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
         <Stack.Screen options={{ headerShown: false }} name="SignUp" component={SignUpScreen} />
         <Stack.Screen options={{ headerShown: false }} name="HomePage" component={HomePage} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name='Favourites' component={FavouritesScreen} />
         <Stack.Screen name="Continents" component={ContinentsScreen} />
         <Stack.Screen
